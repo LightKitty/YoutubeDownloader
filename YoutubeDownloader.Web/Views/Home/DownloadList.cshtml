@@ -6,14 +6,14 @@
     @for (int i = Model.DownloadTasks.Count - 1; i >= 0; i--)
     {
         DownloadTask task = Model.DownloadTasks[i];
-        <div style="margin:0 auto;width:500px;text-align:left">
+        <div style="margin:0 auto;width:600px;text-align:left">
             <hr />
             @if (task.IsError)
             {
                 <font color="red">Error:@task.ErrorMessage</font>
                 <br />
             }
-            <a>@(task.Title ?? "Starting...")</a>
+            <strong>@(task.Title ?? "Starting...")</strong>
             <br />
             <a>@task.Url</a>
             <br />

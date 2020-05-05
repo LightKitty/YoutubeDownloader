@@ -137,7 +137,7 @@ namespace YoutubeDownloader.Core
         {
             try
             {
-                AudioBitrateLable = streamInfoAudio.Bitrate.ToString();
+                AudioBitrateLable = streamInfoAudio.Bitrate.ToString().Replace(" ","");
                 // Get the actual stream
                 var stream = await youtubeClient.Videos.Streams.GetAsync(streamInfoAudio);
 

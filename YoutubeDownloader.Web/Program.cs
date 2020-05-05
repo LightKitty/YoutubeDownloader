@@ -20,11 +20,13 @@ namespace YoutubeDownloader.Web
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseUrls("http://*:5000")
+                .UseUrls("http://*")
                 .UseStartup<Startup>();
 
         private static void ClearFiles()
         {
+            string path = "wwwroot/Files";
+            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
             DirectoryInfo dir = new DirectoryInfo("wwwroot/Files");
             FileSystemInfo[] fileinfo = dir.GetFileSystemInfos();  //返回目录中所有文件和子目录
             if (fileinfo == null) return;

@@ -6,9 +6,13 @@
 
   <ItemGroup>
     <Compile Remove="publish\**" />
+    <Compile Remove="wwwroot\Files\**" />
     <Content Remove="publish\**" />
+    <Content Remove="wwwroot\Files\**" />
     <EmbeddedResource Remove="publish\**" />
+    <EmbeddedResource Remove="wwwroot\Files\**" />
     <None Remove="publish\**" />
+    <None Remove="wwwroot\Files\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,7 +27,6 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\Images\" />
-    <Folder Include="wwwroot\Files\" />
   </ItemGroup>
 
   <ItemGroup>
