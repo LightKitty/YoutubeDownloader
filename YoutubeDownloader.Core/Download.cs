@@ -12,6 +12,7 @@ namespace YoutubeDownloader.Core
         private static int taksId;
         private static List<DownloadTask> downloadTasks = new List<DownloadTask>();
         public static List<DownloadTask> DownloadTasks { get { return downloadTasks; } private set { downloadTasks = value; } }
+
         public static void Start(string url)
         {
             if (downloadTasks.Any(x => x.Url == url)) return; //已存在
@@ -31,6 +32,7 @@ namespace YoutubeDownloader.Core
             };
 
             downloadTasks.Add(downloadTask);
+
             downloadTask.StartAsync();
         }
     }

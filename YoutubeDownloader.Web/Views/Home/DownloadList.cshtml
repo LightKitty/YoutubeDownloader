@@ -6,6 +6,11 @@
 <div>
     @for (int i = Model.Count - 1; i >= 0; i--)
     {
+        if (Model[i].IsError)
+        {
+            <font color="red">Error:@Model[i].ErrorMessage</font>
+            <br />
+        }
         <a>@(Model[i].Title ?? "Starting...")</a>
         <br />
         <a>@Model[i].Url</a>

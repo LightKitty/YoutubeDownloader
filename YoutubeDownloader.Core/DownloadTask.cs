@@ -41,11 +41,15 @@ namespace YoutubeDownloader.Core
 
         public string AudioSizeLable { get; set; }
 
+        public bool IsError { get; set; }
+
+        public string ErrorMessage { get; set; }
+
         #endregion
 
         #region private property
 
-        private static YoutubeClient youtube = new YoutubeClient();
+        private static YoutubeClient youtubeClient = new YoutubeClient();
 
         private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
@@ -56,24 +60,32 @@ namespace YoutubeDownloader.Core
         /// </summary>
         internal async void StartAsync()
         {
-            var video = await youtube.Videos.GetAsync(Url);
-            Title = video.Title;
+            try
+            {
+                var video = await youtubeClient.Videos.GetAsync(Url);
+                Title = video.Title;
 
-            var streamManifest = await youtube.Videos.Streams.GetManifestAsync(Url);
+                var streamManifest = await youtubeClient.Videos.Streams.GetManifestAsync(Url);
 
-            var streamInfoVideo = streamManifest
-                .GetVideoOnly()
-                .Where(s => (s.VideoQuality == VideoQuality.High1080|| s.VideoQuality == VideoQuality.High720) && s.Container == Container.Mp4)
-                .WithHighestVideoQuality();
+                var streamInfoVideo = streamManifest
+                    .GetVideoOnly()
+                    .Where(s => (s.VideoQuality == VideoQuality.High1080 || s.VideoQuality == VideoQuality.High720) && s.Container == Container.Mp4)
+                    .WithHighestVideoQuality();
 
-            if (streamInfoVideo != null) DownloadVideoAsync(streamInfoVideo);
+                if (streamInfoVideo != null) DownloadVideoAsync(streamInfoVideo);
 
-            var streamInfoAudio = streamManifest
-                .GetAudioOnly()
-                .Where(s => s.Container == Container.Mp4)
-                .WithHighestBitrate();
+                var streamInfoAudio = streamManifest
+                    .GetAudioOnly()
+                    .Where(s => s.Container == Container.Mp4)
+                    .WithHighestBitrate();
 
-            if (streamInfoAudio != null) DownloadAudioAsync(streamInfoAudio);
+                if (streamInfoAudio != null) DownloadAudioAsync(streamInfoAudio);
+            }
+            catch(Exception ex)
+            {
+                IsError = true;
+                ErrorMessage = ex.Message;
+            }
         }
 
         /// <summary>
@@ -90,23 +102,31 @@ namespace YoutubeDownloader.Core
         /// <param name="streamInfoVideo"></param>
         async void DownloadVideoAsync(IVideoStreamInfo streamInfoVideo)
         {
-            VideoQualityLable = streamInfoVideo.VideoQualityLabel;
-            // Get the actual stream
-            var stream = await youtube.Videos.Streams.GetAsync(streamInfoVideo);
+            try
+            {
+                VideoQualityLable = streamInfoVideo.VideoQualityLabel;
+                // Get the actual stream
+                var stream = await youtubeClient.Videos.Streams.GetAsync(streamInfoVideo);
 
-            VideoSizeLable = (stream.Length / 1024.0 / 1024.0).ToString("f2") + "MB";
+                VideoSizeLable = (stream.Length / 1024.0 / 1024.0).ToString("f2") + "MB";
 
-            string path = $"Files/{Title}-video.{streamInfoVideo.Container}";
+                string path = $"Files/{Title}-video.{streamInfoVideo.Container}";
 
-            Progress<double> progress = new Progress<double>();
-            progress.ProgressChanged += new EventHandler<double>(VideoProgressEvent);
+                Progress<double> progress = new Progress<double>();
+                progress.ProgressChanged += new EventHandler<double>(VideoProgressEvent);
 
-            // Download the stream to file
-            await youtube.Videos.Streams.DownloadAsync(streamInfoVideo, "wwwroot/" + path, progress, cancellationTokenSource.Token);
-            VideoPath = path;
+                // Download the stream to file
+                await youtubeClient.Videos.Streams.DownloadAsync(streamInfoVideo, "wwwroot/" + path, progress, cancellationTokenSource.Token);
+                VideoPath = path;
 
-            stream.Close();
-            stream.Dispose();
+                stream.Close();
+                stream.Dispose();
+            }
+            catch (Exception ex)
+            {
+                IsError = true;
+                ErrorMessage = ex.Message;
+            }
         }
 
         /// <summary>
@@ -115,23 +135,31 @@ namespace YoutubeDownloader.Core
         /// <param name="streamInfoAudio"></param>
         async void DownloadAudioAsync(IStreamInfo streamInfoAudio)
         {
-            AudioBitrateLable = streamInfoAudio.Bitrate.ToString();
-            // Get the actual stream
-            var stream = await youtube.Videos.Streams.GetAsync(streamInfoAudio);
+            try
+            {
+                AudioBitrateLable = streamInfoAudio.Bitrate.ToString();
+                // Get the actual stream
+                var stream = await youtubeClient.Videos.Streams.GetAsync(streamInfoAudio);
 
-            AudioSizeLable = (stream.Length / 1024.0 / 1024.0).ToString("f2") + "MB";
+                AudioSizeLable = (stream.Length / 1024.0 / 1024.0).ToString("f2") + "MB";
 
-            string path = $"Files/{Title}-audio.{streamInfoAudio.Container}";
+                string path = $"Files/{Title}-audio.{streamInfoAudio.Container}";
 
-            Progress<double> progress = new Progress<double>();
-            progress.ProgressChanged += new EventHandler<double>(AudioProgressEvent);
+                Progress<double> progress = new Progress<double>();
+                progress.ProgressChanged += new EventHandler<double>(AudioProgressEvent);
 
-            // Download the stream to file
-            await youtube.Videos.Streams.DownloadAsync(streamInfoAudio, "wwwroot/" + path, progress, cancellationTokenSource.Token);
-            AudioPath = path;
+                // Download the stream to file
+                await youtubeClient.Videos.Streams.DownloadAsync(streamInfoAudio, "wwwroot/" + path, progress, cancellationTokenSource.Token);
+                AudioPath = path;
 
-            stream.Close();
-            stream.Dispose();
+                stream.Close();
+                stream.Dispose();
+            }
+            catch (Exception ex)
+            {
+                IsError = true;
+                ErrorMessage = ex.Message;
+            }
         }
 
         /// <summary>
@@ -172,6 +200,15 @@ namespace YoutubeDownloader.Core
         public bool IsComplete()
         {
             return (Progress >= 1.0 || (VideoProgress >= 1.0 && AudioProgress >= 1.0));
+        }
+
+        /// <summary>
+        /// 是否停止
+        /// </summary>
+        /// <returns></returns>
+        public bool IsStop()
+        {
+            return IsComplete() || IsError;
         }
     }
 }
