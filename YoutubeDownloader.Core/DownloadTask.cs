@@ -37,6 +37,10 @@ namespace YoutubeDownloader.Core
 
         public string AudioBitrateLable { get; set; }
 
+        public string VideoSizeLable { get; set; }
+
+        public string AudioSizeLable { get; set; }
+
         #endregion
 
         #region private property
@@ -90,6 +94,8 @@ namespace YoutubeDownloader.Core
             // Get the actual stream
             var stream = await youtube.Videos.Streams.GetAsync(streamInfoVideo);
 
+            VideoSizeLable = (stream.Length / 1024.0 / 1024.0).ToString("f2") + "MB";
+
             string path = $"Files/{Title}-video.{streamInfoVideo.Container}";
 
             Progress<double> progress = new Progress<double>();
@@ -112,6 +118,8 @@ namespace YoutubeDownloader.Core
             AudioBitrateLable = streamInfoAudio.Bitrate.ToString();
             // Get the actual stream
             var stream = await youtube.Videos.Streams.GetAsync(streamInfoAudio);
+
+            AudioSizeLable = (stream.Length / 1024.0 / 1024.0).ToString("f2") + "MB";
 
             string path = $"Files/{Title}-audio.{streamInfoAudio.Container}";
 

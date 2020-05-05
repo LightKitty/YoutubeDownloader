@@ -12,13 +12,13 @@
         <br />
         <a>@Model[i].DownloadTime.AddHours(8).ToString("yyyy/MM/dd HH:mm")</a>
         <br />
-        <a>Video(@Model[i].VideoQualityLable):@((Model[i].VideoProgress * 100).ToString("f2"))%</a>
+        <a>Video(@Model[i].VideoQualityLable|@Model[i].VideoSizeLable):@((Model[i].VideoProgress * 100).ToString("f2"))%</a>
         @if (Model[i].VideoProgress >= 1.0)
         {
             <a href="~/@Model[i].VideoPath" download> 下载</a>
         }
         <br />
-        <a>Audio(@Model[i].AudioBitrateLable):@((Model[i].AudioProgress * 100).ToString("f2"))%</a>
+        <a>Audio(@Model[i].AudioBitrateLable|@Model[i].AudioSizeLable):@((Model[i].AudioProgress * 100).ToString("f2"))%</a>
         @if (Model[i].AudioProgress >= 1.0)
         {
             <a href="~/@Model[i].AudioPath" download> 下载</a>
