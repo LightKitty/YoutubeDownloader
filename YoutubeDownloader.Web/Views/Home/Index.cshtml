@@ -1,0 +1,12 @@
+﻿@model YoutubeDownloader.Web.Models.HomeModel
+<h1>
+    Index
+</h1>
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary()
+    <label>Url :</label>
+    @Html.TextBoxFor(x => x.Url, new { })
+    <a> </a>
+    <input type="submit" value="提交">
+}

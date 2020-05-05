@@ -1,0 +1,19 @@
+﻿@model YoutubeDownloader.Web.Models.HomeModel
+<h1>
+    Downloading...
+</h1>
+<a id="progress">0%</a>
+<script>
+    window.setInterval(function () {
+        $.ajax({
+            type: "get",
+            url: "/home/getProgress?url=@Model.Url",
+            success: res => {
+                
+                console.log("定时器回调 " + res);
+
+                $("#progress").text((res * 100).toFixed(2) + "%");
+            }
+        })
+    }, 1000);
+</script>
