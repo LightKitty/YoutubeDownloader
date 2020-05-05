@@ -15,7 +15,7 @@ namespace YoutubeDownloader.Core
 
         public static void Start(string url)
         {
-            if (downloadTasks.Any(x => x.Url == url)) return; //已存在
+            if (downloadTasks.Any(x => x.Url == url && !x.IsError)) return; //已存在正常的
 
             while (downloadTasks.Count >= 5)
             { //任务过多
