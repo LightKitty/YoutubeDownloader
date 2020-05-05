@@ -11,7 +11,7 @@ namespace YoutubeDownloader.Core
 {
     public class DownloadTask
     {
-        YoutubeClient youtube = new YoutubeClient();
+        #region public property
 
         public int Id { get; set; }
 
@@ -37,17 +37,15 @@ namespace YoutubeDownloader.Core
 
         public string AudioBitrateLable { get; set; }
 
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        #endregion
 
-        /// <summary>
-        /// 是否下载完成
-        /// </summary>
-        /// <returns></returns>
-        public bool IsComplete()
-        {
-            //return (Progress >= 1.0 || (VideoProgress >= 1.0 && AudioProgress >= 1.0));
-            return (Progress >= 1.0 || (VideoProgress >= 1.0));
-        }
+        #region private property
+
+        private static YoutubeClient youtube = new YoutubeClient();
+
+        private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+
+        #endregion
 
         /// <summary>
         /// 开始下载
@@ -83,14 +81,26 @@ namespace YoutubeDownloader.Core
         }
 
         /// <summary>
-        /// 删除下载文件
+        /// 下载视频
         /// </summary>
-        internal void DeleteFiles()
+        /// <param name="streamInfoVideo"></param>
+        async void DownloadVideo(IVideoStreamInfo streamInfoVideo)
         {
-            string vPath = $"wwwroot/" + VideoPath;
-            if (File.Exists(vPath)) File.Delete(vPath);
-            string aPath = $"wwwroot/" + AudioPath;
-            if (File.Exists(aPath)) File.Delete(aPath);
+            VideoQualityLable = streamInfoVideo.VideoQualityLabel;
+            // Get the actual stream
+            var stream = await youtube.Videos.Streams.GetAsync(streamInfoVideo);
+
+            string path = $"Files/{Title}-video.{streamInfoVideo.Container}";
+
+            Progress<double> progress = new Progress<double>();
+            progress.ProgressChanged += new EventHandler<double>(VideoProgressEvent);
+
+            // Download the stream to file
+            await youtube.Videos.Streams.DownloadAsync(streamInfoVideo, "wwwroot/" + path, progress, cancellationTokenSource.Token);
+            VideoPath = path;
+
+            stream.Close();
+            stream.Dispose();
         }
 
         /// <summary>
@@ -111,26 +121,9 @@ namespace YoutubeDownloader.Core
             // Download the stream to file
             await youtube.Videos.Streams.DownloadAsync(streamInfoAudio, "wwwroot/" + path, progress, cancellationTokenSource.Token);
             AudioPath = path;
-        }
 
-        /// <summary>
-        /// 下载视频
-        /// </summary>
-        /// <param name="streamInfoVideo"></param>
-        async void DownloadVideo(IVideoStreamInfo streamInfoVideo)
-        {
-            VideoQualityLable = streamInfoVideo.VideoQualityLabel;
-            // Get the actual stream
-            var stream = await youtube.Videos.Streams.GetAsync(streamInfoVideo);
-
-            string path = $"Files/{Title}-video.{streamInfoVideo.Container}";
-
-            Progress<double> progress = new Progress<double>();
-            progress.ProgressChanged += new EventHandler<double>(VideoProgressEvent);
-
-            // Download the stream to file
-            await youtube.Videos.Streams.DownloadAsync(streamInfoVideo, "wwwroot/" + path, progress, cancellationTokenSource.Token);
-            VideoPath = path;
+            stream.Close();
+            stream.Dispose();
         }
 
         /// <summary>
@@ -151,6 +144,26 @@ namespace YoutubeDownloader.Core
         void AudioProgressEvent(object sender, double value)
         {
             AudioProgress = value;
+        }
+
+        /// <summary>
+        /// 删除下载文件
+        /// </summary>
+        internal void DeleteFiles()
+        {
+            string vPath = $"wwwroot/" + VideoPath;
+            if (File.Exists(vPath)) File.Delete(vPath);
+            string aPath = $"wwwroot/" + AudioPath;
+            if (File.Exists(aPath)) File.Delete(aPath);
+        }
+
+        /// <summary>
+        /// 是否下载完成
+        /// </summary>
+        /// <returns></returns>
+        public bool IsComplete()
+        {
+            return (Progress >= 1.0 || (VideoProgress >= 1.0 && AudioProgress >= 1.0));
         }
     }
 }

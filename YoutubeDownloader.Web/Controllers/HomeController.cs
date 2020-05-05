@@ -40,6 +40,11 @@ namespace YoutubeDownloader.Web.Controllers
 
         public IActionResult DownloadList()
         {
+            //是否定时刷新
+            bool htmlRefresh = false;
+            if (Download.DownloadTasks.Any(x => !x.IsComplete())) htmlRefresh = true;
+            ViewData["HtmlRefresh"] = htmlRefresh;
+
             return View(Download.DownloadTasks);
         }
     }
