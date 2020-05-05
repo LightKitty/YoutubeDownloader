@@ -31,7 +31,7 @@ namespace YoutubeDownloader.Core
             };
 
             downloadTasks.Add(downloadTask);
-            downloadTask.Start();
+            downloadTask.StartAsync();
         }
     }
 }

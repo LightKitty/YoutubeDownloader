@@ -50,7 +50,7 @@ namespace YoutubeDownloader.Core
         /// <summary>
         /// 开始下载
         /// </summary>
-        internal async void Start()
+        internal async void StartAsync()
         {
             var video = await youtube.Videos.GetAsync(Url);
             Title = video.Title;
@@ -62,14 +62,14 @@ namespace YoutubeDownloader.Core
                 .Where(s => (s.VideoQuality == VideoQuality.High1080|| s.VideoQuality == VideoQuality.High720) && s.Container == Container.Mp4)
                 .WithHighestVideoQuality();
 
-            if (streamInfoVideo != null) DownloadVideo(streamInfoVideo);
+            if (streamInfoVideo != null) DownloadVideoAsync(streamInfoVideo);
 
             var streamInfoAudio = streamManifest
                 .GetAudioOnly()
                 .Where(s => s.Container == Container.Mp4)
                 .WithHighestBitrate();
 
-            if (streamInfoAudio != null) DownloadAudio(streamInfoAudio);
+            if (streamInfoAudio != null) DownloadAudioAsync(streamInfoAudio);
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace YoutubeDownloader.Core
         /// 下载视频
         /// </summary>
         /// <param name="streamInfoVideo"></param>
-        async void DownloadVideo(IVideoStreamInfo streamInfoVideo)
+        async void DownloadVideoAsync(IVideoStreamInfo streamInfoVideo)
         {
             VideoQualityLable = streamInfoVideo.VideoQualityLabel;
             // Get the actual stream
@@ -107,7 +107,7 @@ namespace YoutubeDownloader.Core
         /// 下载音频
         /// </summary>
         /// <param name="streamInfoAudio"></param>
-        async void DownloadAudio(IStreamInfo streamInfoAudio)
+        async void DownloadAudioAsync(IStreamInfo streamInfoAudio)
         {
             AudioBitrateLable = streamInfoAudio.Bitrate.ToString();
             // Get the actual stream
