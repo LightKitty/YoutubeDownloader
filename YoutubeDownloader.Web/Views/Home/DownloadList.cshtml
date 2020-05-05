@@ -1,37 +1,38 @@
 ﻿@model YoutubeDownloader.Web.Models.DownloadListModel
-<h1>
-    Download List
-</h1>
-<hr />
-@for (int i = Model.DownloadTasks.Count - 1; i >= 0; i--)
-{
-    DownloadTask task = Model.DownloadTasks[i];
-    <div>
-        @if (task.IsError)
-        {
-        <font color="red">Error:@task.ErrorMessage</font>
-        <br />
-        }
-        <a>@(task.Title ?? "Starting...")</a>
-        <br />
-        <a>@task.Url</a>
-        <br />
-        <a>@task.DownloadTime.AddHours(8).ToString("yyyy/MM/dd HH:mm")</a>
-        <br />
-        <a>Video(@task.VideoQualityLable|@task.VideoSizeLable):@((task.VideoProgress * 100).ToString("f2"))%</a>
-        @if (task.VideoProgress >= 1.0)
-        {
-            <a href="~/@task.VideoPath" download> Download</a>
-        }
-        <br />
-        <a>Audio(@task.AudioBitrateLable|@task.AudioSizeLable):@((task.AudioProgress * 100).ToString("f2"))%</a>
-        @if (task.AudioProgress >= 1.0)
-        {
-            <a href="~/@task.AudioPath" download> Download</a>
-        }
-    </div>
-    <hr />
-}
+<div style="width:100%; text-align:center;">
+    <h1>
+        Download List
+    </h1>
+    @for (int i = Model.DownloadTasks.Count - 1; i >= 0; i--)
+    {
+        DownloadTask task = Model.DownloadTasks[i];
+        <div style="margin:0 auto;width:500px;text-align:left">
+            <hr />
+            @if (task.IsError)
+            {
+                <font color="red">Error:@task.ErrorMessage</font>
+                <br />
+            }
+            <a>@(task.Title ?? "Starting...")</a>
+            <br />
+            <a>@task.Url</a>
+            <br />
+            <a>@task.DownloadTime.AddHours(8).ToString("yyyy/MM/dd HH:mm")</a>
+            <br />
+            <a>Video(@task.VideoQualityLable|@task.VideoSizeLable):@((task.VideoProgress * 100).ToString("f2"))%</a>
+            @if (task.VideoProgress >= 1.0)
+            {
+                <a href="~/@task.VideoPath" download> Download</a>
+            }
+            <br />
+            <a>Audio(@task.AudioBitrateLable|@task.AudioSizeLable):@((task.AudioProgress * 100).ToString("f2"))%</a>
+            @if (task.AudioProgress >= 1.0)
+            {
+                <a href="~/@task.AudioPath" download> Download</a>
+            }
+        </div>
+    }
+</div>
 @if (Model.AutoRefresh)
 {
     <script>
