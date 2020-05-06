@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using YoutubeExplode;
 using YoutubeExplode.Videos.Streams;
@@ -110,7 +111,7 @@ namespace YoutubeDownloader.Core
 
                 VideoSizeLable = (stream.Length / 1024.0 / 1024.0).ToString("f2") + "MB";
 
-                string path = $"Files/{Title}-video.{streamInfoVideo.Container}";
+                string path = $"Files/{FileNameFormat(Title)}-video.{streamInfoVideo.Container}";
 
                 Progress<double> progress = new Progress<double>();
                 progress.ProgressChanged += new EventHandler<double>(VideoProgressEvent);
@@ -143,7 +144,7 @@ namespace YoutubeDownloader.Core
 
                 AudioSizeLable = (stream.Length / 1024.0 / 1024.0).ToString("f2") + "MB";
 
-                string path = $"Files/{Title}-audio.{streamInfoAudio.Container}";
+                string path = $"Files/{FileNameFormat(Title)}-audio.{streamInfoAudio.Container}";
 
                 Progress<double> progress = new Progress<double>();
                 progress.ProgressChanged += new EventHandler<double>(AudioProgressEvent);
@@ -209,6 +210,25 @@ namespace YoutubeDownloader.Core
         public bool IsStop()
         {
             return IsComplete() || IsError;
+        }
+
+        /// <summary>
+        /// 文件名去除特殊字符
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        private string FileNameFormat(string str)
+        {
+            if (!string.IsNullOrEmpty(str))
+            {
+                //将特殊字符全部替换为下划线
+                string pattern = "[\\[ \\] \\^ \\-_*×――(^)$%~!@#$…&%￥—+=<>《》!！??？:：•`·、。，；,;\"‘’“”-]";
+                return Regex.Replace(str, pattern, "_");
+            }
+            else
+            {
+                return "";
+            }
         }
     }
 }
