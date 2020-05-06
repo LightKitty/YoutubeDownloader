@@ -112,7 +112,7 @@ namespace YoutubeDownloader.Core
 
                 VideoSizeLable = (stream.Length / 1024.0 / 1024.0).ToString("f2") + "MB";
 
-                string path = $"Files/{FileNameFormat(Title)}_{Id}_video.{streamInfoVideo.Container}";
+                string path = $"Files/{MakeValidFileName(Title)}_{Id}_video.{streamInfoVideo.Container}";
 
                 Progress<double> progress = new Progress<double>();
                 progress.ProgressChanged += new EventHandler<double>(VideoProgressEvent);
@@ -145,7 +145,7 @@ namespace YoutubeDownloader.Core
 
                 AudioSizeLable = (stream.Length / 1024.0 / 1024.0).ToString("f2") + "MB";
 
-                string path = $"Files/{FileNameFormat(Title)}_{Id}_audio.{streamInfoAudio.Container}";
+                string path = $"Files/{MakeValidFileName(Title)}_{Id}_audio.{streamInfoAudio.Container}";
 
                 Progress<double> progress = new Progress<double>();
                 progress.ProgressChanged += new EventHandler<double>(AudioProgressEvent);
@@ -214,22 +214,28 @@ namespace YoutubeDownloader.Core
         }
 
         /// <summary>
-        /// 文件名去除特殊字符
+        /// 去除无效字符
         /// </summary>
-        /// <param name="str"></param>
+        /// <param name="text"></param>
+        /// <param name="replacement"></param>
         /// <returns></returns>
-        private string FileNameFormat(string str)
+        public static string MakeValidFileName(string text, string replacement = "_")
         {
-            if (!string.IsNullOrEmpty(str))
+            StringBuilder str = new StringBuilder(text.Length);
+            var invalidFileNameChars = System.IO.Path.GetInvalidFileNameChars();
+            foreach (var c in text)
             {
-                //将特殊字符全部替换为下划线
-                string pattern = "[\\[ \\] \\^ \\-_*×――(^)$%~!@#$…&%￥—+=<>《》!！??？:：•`·、。，；,;\"‘’“”-]";
-                return Regex.Replace(str, pattern, "_");
+                if (invalidFileNameChars.Contains(c))
+                {
+                    str.Append(replacement ?? "");
+                }
+                else
+                {
+                    str.Append(c);
+                }
             }
-            else
-            {
-                return "";
-            }
+
+            return str.ToString();
         }
     }
 }
