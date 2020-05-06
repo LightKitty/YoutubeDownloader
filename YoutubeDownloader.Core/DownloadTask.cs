@@ -14,7 +14,7 @@ namespace YoutubeDownloader.Core
     {
         #region public property
 
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         public string Url { get; set; }
 
@@ -65,6 +65,7 @@ namespace YoutubeDownloader.Core
             {
                 var video = await youtubeClient.Videos.GetAsync(Url);
                 Title = video.Title;
+                Id = video.Id;
 
                 var streamManifest = await youtubeClient.Videos.Streams.GetManifestAsync(Url);
 
@@ -111,7 +112,7 @@ namespace YoutubeDownloader.Core
 
                 VideoSizeLable = (stream.Length / 1024.0 / 1024.0).ToString("f2") + "MB";
 
-                string path = $"Files/{FileNameFormat(Title)}-video.{streamInfoVideo.Container}";
+                string path = $"Files/{FileNameFormat(Title)}-{Id}-video.{streamInfoVideo.Container}";
 
                 Progress<double> progress = new Progress<double>();
                 progress.ProgressChanged += new EventHandler<double>(VideoProgressEvent);
@@ -144,7 +145,7 @@ namespace YoutubeDownloader.Core
 
                 AudioSizeLable = (stream.Length / 1024.0 / 1024.0).ToString("f2") + "MB";
 
-                string path = $"Files/{FileNameFormat(Title)}-audio.{streamInfoAudio.Container}";
+                string path = $"Files/{FileNameFormat(Title)}-{Id}-audio.{streamInfoAudio.Container}";
 
                 Progress<double> progress = new Progress<double>();
                 progress.ProgressChanged += new EventHandler<double>(AudioProgressEvent);

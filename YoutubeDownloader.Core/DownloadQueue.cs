@@ -9,7 +9,6 @@ namespace YoutubeDownloader.Core
 {
     public static class DownloadQueue
     {
-        private static int taksId;
         private static List<DownloadTask> downloadTasks = new List<DownloadTask>();
         public static List<DownloadTask> DownloadTasks { get { return downloadTasks; } private set { downloadTasks = value; } }
 
@@ -26,7 +25,6 @@ namespace YoutubeDownloader.Core
 
             DownloadTask downloadTask = new DownloadTask
             {
-                Id = ++taksId,
                 Url = url,
                 DownloadTime = DateTime.UtcNow
             };
