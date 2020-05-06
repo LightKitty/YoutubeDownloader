@@ -20,7 +20,11 @@ namespace YoutubeDownloader.Web
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+#if DEBUG
+                .UseUrls("http://*:5000")
+#else
                 .UseUrls("http://*")
+#endif
                 .UseStartup<Startup>();
 
         private static void ClearFiles()

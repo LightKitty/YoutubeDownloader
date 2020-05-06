@@ -22,7 +22,7 @@ namespace YoutubeDownloader.Web.Controllers
         [HttpPost]
         public IActionResult Index(HomeModel homeModel)
         {
-            Download.Start(homeModel.Url);
+            DownloadQueue.Add(homeModel.Url);
             return RedirectToAction("DownloadList");
         }
 
@@ -30,7 +30,7 @@ namespace YoutubeDownloader.Web.Controllers
         public IActionResult GetProgress(string url)
         {
             double process = -1;
-            var downloadTasks = Download.DownloadTasks.FirstOrDefault(x => x.Url == url);
+            var downloadTasks = DownloadQueue.DownloadTasks.FirstOrDefault(x => x.Url == url);
             if (downloadTasks != null)
             {
                 process = downloadTasks.VideoProgress;
@@ -42,8 +42,8 @@ namespace YoutubeDownloader.Web.Controllers
         {
             DownloadListModel downloadListModel = new DownloadListModel
             {
-                DownloadTasks = Download.DownloadTasks,
-                AutoRefresh = Download.DownloadTasks.Any(x => !x.IsStop())
+                DownloadTasks = DownloadQueue.DownloadTasks,
+                AutoRefresh = DownloadQueue.DownloadTasks.Any(x => !x.IsStop())
             };
 
             return View(downloadListModel);

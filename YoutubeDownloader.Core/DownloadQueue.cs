@@ -7,13 +7,13 @@ using YoutubeExplode.Videos.Streams;
 
 namespace YoutubeDownloader.Core
 {
-    public static class Download
+    public static class DownloadQueue
     {
         private static int taksId;
         private static List<DownloadTask> downloadTasks = new List<DownloadTask>();
         public static List<DownloadTask> DownloadTasks { get { return downloadTasks; } private set { downloadTasks = value; } }
 
-        public static void Start(string url)
+        public static void Add(string url)
         {
             if (downloadTasks.Any(x => x.Url == url && !x.IsError)) return; //已存在正常的
 
