@@ -29,9 +29,9 @@ namespace YoutubeDownloader.Web
 
         private static void ClearFiles()
         {
-            string path = "wwwroot/Files";
+            string path = "wwwroot/files";
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-            DirectoryInfo dir = new DirectoryInfo("wwwroot/Files");
+            DirectoryInfo dir = new DirectoryInfo(path);
             FileSystemInfo[] fileinfo = dir.GetFileSystemInfos();  //返回目录中所有文件和子目录
             if (fileinfo == null) return;
             foreach (FileSystemInfo i in fileinfo)

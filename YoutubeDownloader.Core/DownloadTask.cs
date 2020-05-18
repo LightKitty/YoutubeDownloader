@@ -112,7 +112,7 @@ namespace YoutubeDownloader.Core
 
                 VideoSizeLable = (stream.Length / 1024.0 / 1024.0).ToString("f2") + "MB";
 
-                string path = $"Files/{MakeValidFileName(Title)}_{Id}_video.{streamInfoVideo.Container}";
+                string path = $"files/{MakeValidFileName(Title)}_{Id}_video.{streamInfoVideo.Container}";
 
                 Progress<double> progress = new Progress<double>();
                 progress.ProgressChanged += new EventHandler<double>(VideoProgressEvent);
@@ -145,7 +145,7 @@ namespace YoutubeDownloader.Core
 
                 AudioSizeLable = (stream.Length / 1024.0 / 1024.0).ToString("f2") + "MB";
 
-                string path = $"Files/{MakeValidFileName(Title)}_{Id}_audio.{streamInfoAudio.Container}";
+                string path = $"files/{MakeValidFileName(Title)}_{Id}_audio.{streamInfoAudio.Container}";
 
                 Progress<double> progress = new Progress<double>();
                 progress.ProgressChanged += new EventHandler<double>(AudioProgressEvent);
