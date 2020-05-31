@@ -46,6 +46,8 @@ namespace YoutubeDownloader.Core
 
         public string ErrorMessage { get; set; }
 
+        private static readonly char[] illegalChars = new string("[ \\[ \\] \\^ \\-_*×――(^)$%~!@#$…&%￥—+=<>《》!！??？:：•`·、。，；,.;\"‘’“”-]").ToArray();
+
         #endregion
 
         #region private property
@@ -219,15 +221,18 @@ namespace YoutubeDownloader.Core
         /// <param name="text"></param>
         /// <param name="replacement"></param>
         /// <returns></returns>
-        public static string MakeValidFileName(string text, string replacement = "_")
+        public static string MakeValidFileName(string text, char replacement = '_')
         {
             StringBuilder str = new StringBuilder(text.Length);
-            var invalidFileNameChars = System.IO.Path.GetInvalidFileNameChars();
+            //var invalidFileNameChars = System.IO.Path.GetInvalidFileNameChars();
             foreach (var c in text)
             {
-                if (invalidFileNameChars.Contains(c))
-                {
-                    str.Append(replacement ?? "");
+                if ((illegalChars.Contains(c)))
+                { //非法字符替换
+                    if(str[str.Length - 1] != replacement)
+                    {
+                        str.Append(replacement);
+                    }
                 }
                 else
                 {
