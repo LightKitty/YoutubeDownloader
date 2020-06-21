@@ -77,6 +77,12 @@ namespace YoutubeDownloader.Core
                     .WithHighestVideoQuality();
 
                 if (streamInfoVideo != null) DownloadVideoAsync(streamInfoVideo);
+                else
+                {
+                    IsError = true;
+                    ErrorMessage = "No suitable video was found";
+                    return;
+                }
 
                 var streamInfoAudio = streamManifest
                     .GetAudioOnly()
@@ -84,6 +90,12 @@ namespace YoutubeDownloader.Core
                     .WithHighestBitrate();
 
                 if (streamInfoAudio != null) DownloadAudioAsync(streamInfoAudio);
+                else
+                {
+                    IsError = true;
+                    ErrorMessage = "No suitable audio was found";
+                    return;
+                }
             }
             catch(Exception ex)
             {

@@ -16,7 +16,7 @@ namespace YoutubeDownloader.Core
         {
             if (downloadTasks.Any(x => x.Url == url && !x.IsError)) return; //已存在正常的
 
-            while (downloadTasks.Count >= 5)
+            while (downloadTasks.Count >= 10)
             { //任务过多
                 downloadTasks.First().Stop();
                 downloadTasks.First().DeleteFiles();
