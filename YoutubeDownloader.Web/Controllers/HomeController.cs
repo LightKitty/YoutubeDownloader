@@ -43,7 +43,7 @@ namespace YoutubeDownloader.Web.Controllers
             DownloadListModel downloadListModel = new DownloadListModel
             {
                 DownloadTasks = DownloadQueue.DownloadTasks,
-                AutoRefresh = DownloadQueue.DownloadTasks.Any(x => !x.IsStop())
+                //AutoRefresh = DownloadQueue.DownloadTasks.Any(x => !x.IsStop())
             };
 
             return View(downloadListModel);
