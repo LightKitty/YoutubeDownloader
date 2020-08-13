@@ -72,7 +72,8 @@ namespace YoutubeDownloader.Core
                 var streamManifest = await youtubeClient.Videos.Streams.GetManifestAsync(Url);
 
                 var streamInfoVideo = streamManifest
-                    .GetVideoOnly()
+                    //.GetVideoOnly()
+                    .GetVideo()
                     .Where(s => (s.VideoQuality == VideoQuality.High1080 || s.VideoQuality == VideoQuality.High720) && s.Container == Container.Mp4)
                     .WithHighestVideoQuality();
 
