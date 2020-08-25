@@ -46,7 +46,7 @@ namespace YoutubeDownloader.Core
 
         public string ErrorMessage { get; set; }
 
-        private static readonly char[] illegalChars = new string("[ \\[ \\] \\^ \\-_*×――(^)$%~!@#$…&%￥—+=<>《》!！??？:：•`·、。，；,.;\"‘’“”-]").ToArray();
+        private static readonly char[] illegalChars = new string("[ \\[ \\] \\^ \\-_*×――(^)$%~!@#$…&%￥—+=<>《》!！??？:：•`·、。，；,.;\"‘’“”-/]").ToArray();
 
         #endregion
 
